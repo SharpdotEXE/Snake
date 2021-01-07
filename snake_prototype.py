@@ -27,21 +27,25 @@ class Snake:
 	def movement(self):
 		for event in pygame.event.get():
 
-			if event.type == pygame.K_s:
-				self.direction = 'down'
-				self.y += self.speed
+			if event.type == pygame.KEYDOWN:
 
-			elif event.type == pygame.K_w:
-				self.direction = 'up'
-				self.y -= self.speed
+				for event in pygame.event.get():
 
-			elif event.type == pygame.K_d:
-				self.direction = 'right'
-				self.x += self.speed
+					if event.type == pygame.K_s:
+						self.direction = 'down'
+						self.y += self.speed
 
-			elif event.type == pygame.K_a:
-				self.direction = 'left'
-				self.x -= self.speed
+					elif event.type == pygame.K_w:
+						self.direction = 'up'
+						self.y -= self.speed
+
+					elif event.type == pygame.K_d:
+						self.direction = 'right'
+						self.x += self.speed
+
+					elif event.type == pygame.K_a:
+						self.direction = 'left'
+						self.x -= self.speed
 
 
 
@@ -70,6 +74,9 @@ while running:
 
 	screen.fill(color)
 
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			running = False
 
 	player.load_image()
 	player.movement()
@@ -79,10 +86,12 @@ while running:
 		if event.type == pygame.QUIT:
 			running = False
 
+		print(event)
+
 	pygame.display.update()
 	fpsClock.tick(fps)
 
 
-	print(player.x, player.y)
+	#print(player.x, player.y)
 
 pygame.quit()
