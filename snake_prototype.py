@@ -98,10 +98,6 @@ while running:
 
 	screen.fill(color)
 
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			running = False
-
 	player.load_image()
 	player.move()
 	player.check_change_direction()
@@ -118,6 +114,6 @@ while running:
 	fpsClock.tick(fps)
 
 
-	print(player.x, player.y)
+	#print(player.x, player.y)
 
 pygame.quit()
