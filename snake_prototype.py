@@ -24,48 +24,72 @@ class Snake:
 		screen.blit(square, (self.x, self.y))
 
 
-	def movement(self):
-		for event in pygame.event.get():
+	def starting_direction(self):
+			self.direction = random.choice(['up', 'down', 'left', 'right'])
 
-			if event.type == pygame.KEYDOWN:
+	def move(self):
+		if self.direction == 'right':
+			self.x += self.speed
+		elif self.direction == 'left':
+			self.x -= self.speed
+		elif self.direction == 'down':
+			self.y += self.speed
+		elif self.direction == 'up':
+			self.y -= self.speed
 
-				for event in pygame.event.get():
 
-					if event.type == pygame.K_s:
-						self.direction = 'down'
-						self.y += self.speed
+	def check_change_direction(self):
+		keys = pygame.key.get_pressed()
 
-					elif event.type == pygame.K_w:
-						self.direction = 'up'
-						self.y -= self.speed
+		if keys[pygame.K_d]:
+			self.direction = 'right'
+		if keys[pygame.K_a]:
+			self.direction = 'left'
+		if keys[pygame.K_s]:
+			self.direction = 'down'
+		if keys[pygame.K_w]:
+			self.direction = 'up'
 
-					elif event.type == pygame.K_d:
-						self.direction = 'right'
-						self.x += self.speed
+	def loss(self):
+		print('you suck')
+		pygame.quit()
 
-					elif event.type == pygame.K_a:
-						self.direction = 'left'
-						self.x -= self.speed
+	def check_wall_loss(self):
+		if self.y < top_boundary:
+			self.loss()
+		if self.y > bottom_boundary:
+			self.loss()
+		if self.x < left_boundary:
+			self.loss()
+		if self.x > right_boundary:
+			self.loss()
+
+		 
+
+
+
+
+
 
 
 
 
 
 top_boundary = 0
-bottom_boundary = 600
+bottom_boundary = 750
 left_boundary = 0
-right_boundary = 700
+right_boundary = 750
 
 fpsClock = pygame.time.Clock()
 fps = 60
 color = (0, 0, 0)
-width, height = 700, 600
+width, height = 750, 750
 screen = pygame.display.set_mode((width, height))
 
-player = Snake(25, 25, 350, 300, 1, None, (30, 242, 19), None, 25)
+player = Snake(25, 25, 375, 375, 1, None, (30, 242, 19), None, 2.5)
 			  #width, height, x, y, size, hitbox, color, direction, speed
 
-
+player.starting_direction()
 
 
 
@@ -79,19 +103,21 @@ while running:
 			running = False
 
 	player.load_image()
-	player.movement()
+	player.move()
+	player.check_change_direction()
 
+
+	player.check_wall_loss()
 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			running = False
 
-		print(event)
 
 	pygame.display.update()
 	fpsClock.tick(fps)
 
 
-	#print(player.x, player.y)
+	print(player.x, player.y)
 
 pygame.quit()
