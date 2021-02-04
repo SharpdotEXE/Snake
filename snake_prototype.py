@@ -6,25 +6,25 @@ pygame.init()
 
 class Snake:
 
-    def __init__(self, width, height, x, y, size, hitbox, color, direction, speed):
-        self.width = width
-        self.height = height
-        self.x = x
-        self.y = y
-        self.size = size
-        self.hitbox = hitbox
-        self.color = color
-        self.direction = direction
-        self.speed = speed
+    def __init__(self):
+        self.width = 25
+        self.height = 25
+        self.x = 375
+        self.y = 375
+        self.size = 1
+        self.color = (30, 242, 19)
+        self.direction = random.choice(['up', 'down', 'left', 'right'])
+        self.speed = 3
+        self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+
+
 
     def load_image(self):
-        square = pygame.Surface((self.width, self.height))
-        square.fill(self.color)
-        pygame.draw.rect(square, self.color, (self.x, self.y, self.width, self.height), 0)
-        screen.blit(square, (self.x, self.y))
+        self.square = pygame.Surface((self.width, self.height))
+        self.square.fill(self.color)
+        pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height), 0)
+        screen.blit(self.square, (self.x, self.y))
 
-    def starting_direction(self):
-        self.direction = random.choice(['up', 'down', 'left', 'right'])
 
     def move(self):
         if self.direction == 'right':
@@ -35,6 +35,7 @@ class Snake:
             self.y += self.speed
         elif self.direction == 'up':
             self.y -= self.speed
+
 
     def check_change_direction(self):
 
@@ -56,9 +57,27 @@ class Snake:
             if keys[pygame.K_w]:
                 self.direction = 'up'
 
+
+    def update_hitbox(self):
+
+        if self.direction == 'right':
+            self.hitbox = pygame.Rect(self.x + self.speed, self.y, self.width, self.height)
+
+        if self.direction == 'left':
+            self.hitbox = pygame.Rect(self.x - self.speed, self.y, self.width, self.height)
+
+        if self.direction == 'up':
+            self.hitbox = pygame.Rect(self.x, self.y + self.speed, self.width, self.height)
+
+        if self.direction == 'down':
+            self.hitbox = pygame.Rect(self.x, self.y - self.speed, self.width, self.height)
+
+
     def loss(self):
+        #work on this later
         print('you suck')
         pygame.quit()
+
 
     def check_wall_loss(self):
 
@@ -72,10 +91,26 @@ class Snake:
             self.loss()
 
 
+class Apple:
+
+    def __init__(self, x, y):
+        self.width = 25
+        self.height = 25
+        self.x = x
+        self.y = y
+        self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.color = (212, 36, 56)
+
+
+
+
+x = 0
+
+
 top_boundary = 0
-bottom_boundary = 750
+bottom_boundary = 725
 left_boundary = 0
-right_boundary = 750
+right_boundary = 725
 
 fpsClock = pygame.time.Clock()
 fps = 60
@@ -83,29 +118,35 @@ color = (0, 0, 0)
 width, height = 750, 750
 screen = pygame.display.set_mode((width, height))
 
-player = Snake(25, 25, 375, 375, 1, None, (30, 242, 19), None, 2.5)
-# width, height, x, y, size, hitbox, color, direction, speed
 
-player.starting_direction()
+snake = Snake()
+
 
 running = True
 while running:
 
+    x += 1
+
     screen.fill(color)
 
-    player.load_image()
-    player.move()
-    player.check_change_direction()
+    snake.load_image()
+    snake.move()
+    snake.check_change_direction()
+    snake.update_hitbox()
 
-    player.check_wall_loss()
+    snake.check_wall_loss()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
+
+
     pygame.display.update()
     fpsClock.tick(fps)
 
-# print(player.x, player.y)
-
-pygame.quit()
+    if x % 45 == 0:
+        #print(f'x={snake.x}, y={snake.y}, w={snake.width}, h={snake.height}')
+        print(snake.hitbox)
+        #print(snake.direction)
+        #print(snake.x, snake.y)
