@@ -7,6 +7,7 @@ pygame.init()
 class Snake:
 
     def __init__(self):
+        
         self.width = 25
         self.height = 25
         self.x = 375
@@ -20,6 +21,7 @@ class Snake:
 
 
     def load_image(self):
+        
         self.square = pygame.Surface((self.width, self.height))
         self.square.fill(self.color)
         pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height), 0)
@@ -27,6 +29,7 @@ class Snake:
 
 
     def move(self):
+        
         if self.direction == 'right':
             self.x += self.speed
         elif self.direction == 'left':
@@ -74,6 +77,7 @@ class Snake:
 
 
     def loss(self):
+        
         #work on this later
         print('you suck')
         pygame.quit()
@@ -94,6 +98,7 @@ class Snake:
 class Apple:
 
     def __init__(self):
+        
         self.width = 25
         self.height = 25
         self.x = random.choice(range(0, width))
@@ -103,6 +108,7 @@ class Apple:
 
 
     def load_image(self):
+        
         self.square = pygame.Surface((self.width, self.height))
         self.square.fill(self.color)
         pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height), 0)
@@ -110,6 +116,7 @@ class Apple:
 
 
     def update_hitbox(self):
+        
         self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
 
         if pygame.Rect.colliderect(self.hitbox, snake.hitbox):
@@ -117,7 +124,7 @@ class Apple:
 
 
 
-x = 0
+#x = 0
 
 
 top_boundary = 0
