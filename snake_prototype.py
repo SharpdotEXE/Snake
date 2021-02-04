@@ -93,14 +93,27 @@ class Snake:
 
 class Apple:
 
-    def __init__(self, x, y):
+    def __init__(self):
         self.width = 25
         self.height = 25
-        self.x = x
-        self.y = y
+        self.x = random.choice(range(0, width))
+        self.y = random.choice(range(0, height))
         self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
         self.color = (212, 36, 56)
 
+
+    def load_image(self):
+        self.square = pygame.Surface((self.width, self.height))
+        self.square.fill(self.color)
+        pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height), 0)
+        screen.blit(self.square, (self.x, self.y))
+
+
+    def update_hitbox(self):
+        self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+
+        if pygame.Rect.colliderect(self.hitbox, snake.hitbox):
+            print('apple eaten')
 
 
 
@@ -120,6 +133,7 @@ screen = pygame.display.set_mode((width, height))
 
 
 snake = Snake()
+apple = Apple()
 
 
 running = True
@@ -128,6 +142,9 @@ while running:
     x += 1
 
     screen.fill(color)
+
+    apple.load_image()
+    apple.update_hitbox()
 
     snake.load_image()
     snake.move()
@@ -145,8 +162,9 @@ while running:
     pygame.display.update()
     fpsClock.tick(fps)
 
-    if x % 45 == 0:
+    # if x % 45 == 0:
+    #     print(apple.hitbox)
         #print(f'x={snake.x}, y={snake.y}, w={snake.width}, h={snake.height}')
-        print(snake.hitbox)
+        #print(snake.hitbox)
         #print(snake.direction)
         #print(snake.x, snake.y)
