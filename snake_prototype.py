@@ -20,6 +20,7 @@ class Snake:
         self.direction = random.choice(['up', 'down', 'left', 'right'])
         self.speed = 25
         self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.counter = 0
 
 
 
@@ -31,9 +32,15 @@ class Snake:
         screen.blit(self.square, (self.x, self.y))
 
 
+    def increase_counter(self):
+        self.counter += 1
+
+
     def move(self):
 
-        if counter % 10 == 0:
+        self.increase_counter()
+
+        if self.counter % 10 == 0:
             if self.direction == 'right':
                 self.x += self.speed
             elif self.direction == 'left':
@@ -44,14 +51,7 @@ class Snake:
                 self.y -= self.speed
 
 
-        # if self.direction == 'right':
-        #     self.x += self.speed
-        # elif self.direction == 'left':
-        #     self.x -= self.speed
-        # elif self.direction == 'down':
-        #     self.y += self.speed
-        # elif self.direction == 'up':
-        #     self.y -= self.speed
+        
 
 
     def check_change_direction(self):
@@ -136,9 +136,7 @@ class Apple:
 
         if pygame.Rect.colliderect(self.hitbox, snake.hitbox):
 
-            # for some reason end boundary - 1 is currently
-            # only way to make apple spawn correctly at end boundary
-            # will fix later
+            
             self.x = random.choice(range(left_boundary, right_boundary, 25))
             self.y = random.choice(range(top_boundary, bottom_boundary, 25))
             print('apple eaten')
@@ -158,7 +156,7 @@ color = (0, 0, 0)
 width, height = 500, 500
 screen = pygame.display.set_mode((width, height))
 
-counter = 0
+
 
 
 
@@ -169,15 +167,8 @@ apple = Apple()
 running = True
 while running:
 
-    counter += 1
-
+    
     screen.fill(color)
-
-
-
-
-
-
 
 
     apple.load_image()
@@ -203,11 +194,10 @@ while running:
 
     # x += 1
     # if x % 45 == 0:
-    print(apple.x, apple.y)
+    #print(apple.x, apple.y)
     #print(snake.x, snake.y)
     #     print(apple.hitbox)
         #print(f'x={snake.x}, y={snake.y}, w={snake.width}, h={snake.height}')
         #print(snake.hitbox)
         #print(snake.direction)
         #print(snake.x, snake.y)
-
