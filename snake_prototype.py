@@ -18,26 +18,30 @@ class Snake:
         self.direction = random.choice(['up', 'down', 'left', 'right'])
         self.speed = 25
         self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.body = [self.square]
         self.counter = 0
 
 
     def load_image(self):
 
         self.square.fill(self.color)
-        pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height), 0)
+        pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height))
         screen.blit(self.square, (self.x, self.y))
+
 
     def update_hitbox(self):
 
         self.hitbox = pygame.Rect(self.x + self.speed, self.y, self.width, self.height)
 
+
     def increase_counter(self):
 
         self.counter += 1
 
+
     def move(self):
 
-        #self.update_hitbox()
+        self.update_hitbox()
 
         self.increase_counter()
 
@@ -50,6 +54,7 @@ class Snake:
                 self.y += self.speed
             if self.direction == 'up':
                 self.y -= self.speed
+
 
     def check_change_direction(self):
 
@@ -72,14 +77,12 @@ class Snake:
                 self.direction = 'up'
 
 
-
-
     def loss(self):
 
         # work on this later
         print('you suck')
         pygame.quit()
-        pygame.QUIT()
+
 
     def check_wall_loss(self):
 
@@ -93,11 +96,51 @@ class Snake:
             self.loss()
 
 
+    def increase_length(self):
+
+        self.body.append(self.square)
+        print(self.body)
+
+
     def check_collision(self):
 
         if self.x == apple.x:
             if self.y == apple.y:
-                print('collision')
+                self.increase_length()
+
+
+    def cheat_mode(self):
+
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_m]:
+
+            if self.direction == 'right':
+
+                pygame.draw.line(screen, 'white', [self.x + .5 * self.width, self.y + .5 * self.width,],
+                                 [right_boundary, self.y + .5 * self.width], 5)
+
+            if self.direction == 'left':
+
+                pygame.draw.line(screen, 'white', [self.x + .5 * self.width, self.y + .5 * self.width,],
+                                 [left_boundary, self.y + .5 * self.width], 5)
+
+            if self.direction == 'down':
+
+                pygame.draw.line(screen, 'white', [self.x + .5 * self.width, self.y + .5 * self.width, ],
+                                 [self.x + .5 * self.width, bottom_boundary], 5)
+
+            if self.direction == 'up':
+
+                pygame.draw.line(screen, 'white', [self.x + .5 * self.width, self.y + .5 * self.width, ],
+                                 [self.x + .5 * self.width, top_boundary], 5)
+
+
+        #pygame.draw.line(screen, 'cyan', [x_start, y_start], [x_end, y_end], 5)
+
+
+
+
 
 
 
@@ -113,24 +156,26 @@ class Apple:
         self.color = (212, 36, 56)
         self.square = pygame.Surface((self.width, self.height))
 
+
     def load_image(self):
 
 
         self.square.fill(self.color)
-        pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height), 0)
+        pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height))
         screen.blit(self.square, (self.x, self.y))
 
+
     def update_hitbox(self):
+
+        self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
 
         if pygame.Rect.colliderect(self.hitbox, snake.hitbox):
             self.x = random.choice(range(left_boundary, right_boundary, 25))
             self.y = random.choice(range(top_boundary, bottom_boundary, 25))
-            print('collision')
-
-            self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
 
 
     def check_collision(self):
+
         if self.x == snake.x:
             if self.y == snake.y:
                 self.x = random.choice(range(left_boundary, right_boundary, 25))
@@ -165,13 +210,15 @@ while running:
     snake.load_image()
     snake.move()
     snake.check_change_direction()
+    snake.check_collision()
+    snake.cheat_mode()
     #snake.update_hitbox()
 
     snake.check_wall_loss()
 
     apple.check_collision()
 
-    #snake.check_collision()
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -185,10 +232,11 @@ while running:
     x += 1
     if x % 15 == 0:
         print()
-    # print(apple.x, apple.y)
-    # print(f'snake hitbox = {snake.hitbox},     apple hitbox = {apple.hitbox}')
-    #print(snake.x, snake.y, apple.x, apple.y)
-    # print(f'x={snake.x}, y={snake.y}, w={snake.width}, h={snake.height}')
-    # print(snake.hitbox)
-    # print(snake.direction)
-    # print(snake.x, snake.y)
+        # print(len(snake.body))
+        # print(apple.x, apple.y)
+        # print(f'snake hitbox = {snake.hitbox},     apple hitbox = {apple.hitbox}')
+        # print(snake.x, snake.y, apple.x, apple.y)
+        # print(f'x={snake.x}, y={snake.y}, w={snake.width}, h={snake.height}')
+        # print(snake.hitbox)
+        # print(snake.direction)
+        # print(snake.x, snake.y)
