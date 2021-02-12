@@ -12,21 +12,21 @@ class Snake:
         self.height = 25
         self.x = 250
         self.y = 250
-        self.square = pygame.Surface((self.width, self.height))
         self.size = 1
         self.color = (30, 242, 19)
         self.direction = random.choice(['up', 'down', 'left', 'right'])
         self.speed = 25
         self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.body = [self.square]
+        self.position = [self.x, self.y]
         self.counter = 0
+        self.body = [self.position, [self.x - self.width, self.y], [self.x - self.width * 2, self.y]]
 
 
-    def load_image(self):
+    def render(self):
 
-        self.square.fill(self.color)
-        pygame.draw.rect(self.square, self.color, (self.x, self.y, self.width, self.height))
-        screen.blit(self.square, (self.x, self.y))
+        for block in self.body:
+
+            pygame.draw.rect(screen, self.color, (block[0], block[1], self.width, self.height))
 
 
     def update_hitbox(self):
@@ -96,17 +96,11 @@ class Snake:
             self.loss()
 
 
-    def increase_length(self):
-
-        self.body.append(self.square)
-        print(self.body)
-
-
     def check_collision(self):
 
         if self.x == apple.x:
             if self.y == apple.y:
-                self.increase_length()
+                pass
 
 
     def cheat_mode(self):
@@ -139,8 +133,31 @@ class Snake:
         #pygame.draw.line(screen, 'cyan', [x_start, y_start], [x_end, y_end], 5)
 
 
+    def update_body(self):
+
+        self.position = [self.x, self.y]
+
+        if self.direction == 'right':
+            self.body = [self.position, [self.x - self.width, self.y], [self.x - self.width * 2, self.y]]
+
+        if self.direction == 'left':
+            self.body = [self.position, [self.x + self.width, self.y], [self.x - self.width * 2, self.y]]
+
+        if self.direction == 'down':
+            self.body = [self.position, [self.x, self.y - self.width], [self.x, self.y - self.width * 2]]
+
+        if self.direction == 'up':
+            self.body = [self.position, [self.x, self.y + self.width], [self.x, self.y + self.width * 2]]
 
 
+    def update(self):
+        self.render()
+        self.move()
+        self.check_change_direction()
+        self.check_collision()
+        self.cheat_mode()
+        self.check_wall_loss()
+        self.update_body()
 
 
 
@@ -157,7 +174,7 @@ class Apple:
         self.square = pygame.Surface((self.width, self.height))
 
 
-    def load_image(self):
+    def render(self):
 
 
         self.square.fill(self.color)
@@ -182,8 +199,13 @@ class Apple:
                 self.y = random.choice(range(top_boundary, bottom_boundary, 25))
 
 
+    def update(self):
+        self.render()
+        self.check_collision()
 
-x = 0
+
+
+game_counter = 0
 
 top_boundary = 0
 bottom_boundary = 475
@@ -199,24 +221,32 @@ screen = pygame.display.set_mode((width, height))
 snake = Snake()
 apple = Apple()
 
+
+def debug():
+
+    print(snake.direction, snake.body)
+    # print(snake.body)
+    # print(snake.position)
+    # print(len(snake.body))
+    # print(apple.x, apple.y)
+    # print(f'snake hitbox = {snake.hitbox},     apple hitbox = {apple.hitbox}')
+    # print(snake.x, snake.y, apple.x, apple.y)
+    # print(f'x={snake.x}, y={snake.y}, w={snake.width}, h={snake.height}')
+    # print(snake.hitbox)
+    # print(snake.direction)
+    # print(snake.x, snake.y)
+
+
+
 running = True
 while running:
 
     screen.fill(color)
 
-    apple.load_image()
-    #apple.update_hitbox()
 
-    snake.load_image()
-    snake.move()
-    snake.check_change_direction()
-    snake.check_collision()
-    snake.cheat_mode()
-    #snake.update_hitbox()
+    snake.update()
+    apple.update()
 
-    snake.check_wall_loss()
-
-    apple.check_collision()
 
 
 
@@ -229,14 +259,7 @@ while running:
 
     ### debug tools
 
-    x += 1
-    if x % 15 == 0:
+    game_counter += 1
+    if game_counter % 15 == 0:
         print()
-        # print(len(snake.body))
-        # print(apple.x, apple.y)
-        # print(f'snake hitbox = {snake.hitbox},     apple hitbox = {apple.hitbox}')
-        # print(snake.x, snake.y, apple.x, apple.y)
-        # print(f'x={snake.x}, y={snake.y}, w={snake.width}, h={snake.height}')
-        # print(snake.hitbox)
-        # print(snake.direction)
-        # print(snake.x, snake.y)
+        debug()
