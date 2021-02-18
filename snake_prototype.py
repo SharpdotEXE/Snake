@@ -141,7 +141,7 @@ class Snake:
             self.body = [self.position, [self.x - self.width, self.y], [self.x - self.width * 2, self.y]]
 
         if self.direction == 'left':
-            self.body = [self.position, [self.x + self.width, self.y], [self.x - self.width * 2, self.y]]
+            self.body = [self.position, [self.x + self.width, self.y], [self.x + self.width * 2, self.y]]
 
         if self.direction == 'down':
             self.body = [self.position, [self.x, self.y - self.width], [self.x, self.y - self.width * 2]]
